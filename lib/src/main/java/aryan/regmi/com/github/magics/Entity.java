@@ -35,10 +35,11 @@ class Entity {
     }
   }
 
-  <T extends Component> Optional<T> getComponent(Type classType) {
+  <T extends Component> Optional<T> getComponent(Class<T> classType) {
     for (var component : components) {
       if (component.getClass() == classType) {
-        return Optional.of((T) component);
+        T ret = classType.cast(component);
+        return Optional.of(ret);
       }
     }
 
