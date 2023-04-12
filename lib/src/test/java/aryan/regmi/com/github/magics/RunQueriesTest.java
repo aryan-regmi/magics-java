@@ -65,11 +65,11 @@ class RunQueriesTest {
 
   @Test
   void canQueryWorld() {
-    new Magics.App()
-        .addSystem(new SetupSystem())
-        .addSystem(new RunQuerySystem())
-        .addSystem(new CheckUpdatedQueriesSystem())
+    new App()
+        .addStage(0, new SetupSystem())
+        .addStage(1,
+            new RunQuerySystem(),
+            new CheckUpdatedQueriesSystem())
         .run();
-
   }
 }
