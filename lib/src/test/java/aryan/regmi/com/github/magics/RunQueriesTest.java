@@ -1,0 +1,56 @@
+package aryan.regmi.com.github.magics;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
+
+import aryan.regmi.com.github.magics.Magics.AppSystem;
+import aryan.regmi.com.github.magics.Magics.Component;
+import aryan.regmi.com.github.magics.Utils.Age;
+import aryan.regmi.com.github.magics.Utils.Health;
+
+class RunQueriesTest {
+  private static record Npc() implements Component {
+  }
+
+  private static class SetupSystem implements AppSystem {
+    @Override
+    public void run(MContext ctx) {
+      ctx.spawnEntity(new Npc(), new Health(67)); // NPC
+
+      // Players
+      ctx.spawnEntity(new Health(80), new Age(40));
+      ctx.spawnEntity(new Health(95), new Age(29));
+    }
+  }
+
+  private static class RunQuerySystem implements AppSystem {
+    @Override
+    public void run(MContext ctx) {
+      var playersQuery = ctx.query(Health.class, Age.class);
+      var npcQuery = ctx.query(Npc.class, Health.class).single();
+
+      // Check players
+      var players = playersQuery.iterator();
+      var player1 = players.next();
+      assertEquals(player1.getComponent(Health.class).get().val(), 80);
+      assertEquals(player1.getComponent(Age.class).get().val(), 40);
+
+      var player2 = players.next();
+      assertEquals(player2.getComponent(Health.class).get().val(), 95);
+      assertEquals(player2.getComponent(Age.class).get().val(), 29);
+
+      // Check npc
+      assertEquals(npcQuery.getComponent(Health.class).get().val(), 67);
+    }
+  }
+
+  @Test
+  void canQueryWorld() {
+    new Magics.App()
+        .addSystem(new SetupSystem())
+        .addSystem(new RunQuerySystem())
+        .run();
+
+  }
+}

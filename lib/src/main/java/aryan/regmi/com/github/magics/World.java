@@ -1,6 +1,5 @@
 package aryan.regmi.com.github.magics;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -12,12 +11,12 @@ import aryan.regmi.com.github.magics.Magics.Component;
 class World {
   int numEntities;
   List<Entity> entities;
-  Map<Type, List<Optional<Component>>> componentLists;
+  Map<Class<?>, List<Optional<Component>>> componentLists;
 
   World() {
     numEntities = 0;
     entities = new ArrayList<Entity>();
-    componentLists = new HashMap<Type, List<Optional<Component>>>();
+    componentLists = new HashMap<Class<?>, List<Optional<Component>>>();
   }
 
   int spawnEntity(Component... components) {
