@@ -27,6 +27,8 @@ class RunQueriesTest {
   private static class RunQuerySystem implements AppSystem {
     @Override
     public void run(MContext ctx) {
+      System.out.println("RUnning runquerysystem");
+
       var playersQuery = ctx.query(Health.class, Age.class);
       var npcQuery = ctx.query(Npc.class, Health.class).single();
 
@@ -51,6 +53,8 @@ class RunQueriesTest {
   private static class CheckUpdatedQueriesSystem implements AppSystem {
     @Override
     public void run(MContext ctx) {
+      System.out.println("Running CheckUpdatedQueriesSystem system...");
+
       var playersQuery = ctx.query(Health.class, Age.class);
       var players = playersQuery.iterator();
 
@@ -67,9 +71,8 @@ class RunQueriesTest {
   void canQueryWorld() {
     new App()
         .addStage(0, new SetupSystem())
-        .addStage(1,
-            new RunQuerySystem(),
-            new CheckUpdatedQueriesSystem())
+        .addStage(1, new RunQuerySystem())
+        .addSystem(new CheckUpdatedQueriesSystem())
         .run();
   }
 }

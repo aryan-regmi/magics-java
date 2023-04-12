@@ -71,8 +71,20 @@ public class App {
       }
     });
     for (var stage : stages) {
+      var stageThreadHandles = new ArrayList<Thread>();
       for (var stageSystem : stage.systems()) {
-        stageSystem.run(new MContext(world));
+        // stageSystem.run(new MContext(world));
+        var systemRunnerThread = new Thread(new SystemRunner(stageSystem, world));
+        systemRunnerThread.start();
+        stageThreadHandles.add(systemRunnerThread);
+      }
+
+      for (var handle : stageThreadHandles) {
+        try {
+          handle.join();
+        } catch (Exception e) {
+          e.printStackTrace();
+        }
       }
     }
 
