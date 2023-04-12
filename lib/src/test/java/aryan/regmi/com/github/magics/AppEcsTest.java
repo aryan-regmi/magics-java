@@ -17,7 +17,7 @@ class AppEcsTest {
     }
   }
 
-  private static class AnotherSystem implements AppSystem {
+  private static class StagedSystem implements AppSystem {
     @Override
     public void run(MContext ctx) {
       System.out.println("I ran second");
@@ -25,10 +25,18 @@ class AppEcsTest {
     }
   }
 
-  private static class YetAnotherSystem implements AppSystem {
+  private static class ParSystem1 implements AppSystem {
     @Override
     public void run(MContext ctx) {
       System.out.println("I run by myself!");
+      System.out.println(ctx.getEntities());
+    }
+  }
+
+  private static class ParSystem2 implements AppSystem {
+    @Override
+    public void run(MContext ctx) {
+      System.out.println("I run by myself TOO!");
       System.out.println(ctx.getEntities());
     }
   }
@@ -39,8 +47,9 @@ class AppEcsTest {
     var app = new App()
         .addStage(0,
             setupSystem,
-            new AnotherSystem())
-        .addSystem(new YetAnotherSystem());
+            new StagedSystem())
+        .addSystem(new ParSystem1())
+        .addSystem(new ParSystem2());
 
     assertEquals(app.stages.get(0).systems().contains(setupSystem), true);
 

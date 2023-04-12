@@ -40,6 +40,21 @@ public class App {
     return this;
   }
 
+  private class SystemRunner implements Runnable {
+    private AppSystem system;
+    private World world;
+
+    SystemRunner(AppSystem system, World world) {
+      this.system = system;
+      this.world = world;
+    }
+
+    @Override
+    public void run() {
+      system.run(new MContext(world));
+    }
+  }
+
   /**
    * Runs the systems in the app.
    */
@@ -61,9 +76,20 @@ public class App {
       }
     }
 
+    var systemThreadHandles = new ArrayList<Thread>();
     for (var appSystem : systems) {
-      var ctx = new MContext(world);
-      appSystem.run(ctx);
+      var systemRunnerThread = new Thread(new SystemRunner(appSystem, world));
+      systemRunnerThread.start();
+      systemThreadHandles.add(systemRunnerThread);
     }
+
+    for (var handle : systemThreadHandles) {
+      try {
+        handle.join();
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    }
+
   }
 }
