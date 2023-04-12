@@ -20,10 +20,10 @@ class World {
   }
 
   int spawnEntity(Component... components) {
-    var entityIdx = numEntities;
+    var entityId = numEntities;
     numEntities++;
 
-    var entity = new Entity();
+    var entity = new Entity(entityId);
     for (var component : components) {
       // Add to list if it exists
       if (componentLists.containsKey(component.getClass())) {
@@ -43,6 +43,6 @@ class World {
     }
     entities.add(entity);
 
-    return entityIdx;
+    return entityId;
   }
 }

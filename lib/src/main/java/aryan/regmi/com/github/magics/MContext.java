@@ -23,4 +23,33 @@ public class MContext {
     return world.entities;
   }
 
+  void updateEntity(int entityId, Entity newEntity) {
+    world.entities.set(entityId, newEntity);
+  }
+
+  boolean updateEntityComponent(int entityId, Component component) {
+    var entity = world.entities.get(entityId);
+    if (entity.componentTypes.contains(component.getClass())) {
+      var componentCount = 0;
+      for (var entityComponent : entity.components) {
+        if (entityComponent.getClass() == component.getClass()) {
+          entity.components.set(componentCount, component);
+        }
+        componentCount++;
+      }
+      return true;
+    }
+
+    return false;
+  }
+
+  boolean removeEntity(int entityId) {
+    if (entityId < world.numEntities) {
+      world.entities.remove(entityId);
+      return true;
+    }
+
+    return false;
+  }
+
 }

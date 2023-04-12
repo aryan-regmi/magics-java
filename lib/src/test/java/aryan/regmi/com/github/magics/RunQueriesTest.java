@@ -30,18 +30,36 @@ class RunQueriesTest {
       var playersQuery = ctx.query(Health.class, Age.class);
       var npcQuery = ctx.query(Npc.class, Health.class).single();
 
-      // Check players
+      // Check and update players
       var players = playersQuery.iterator();
       var player1 = players.next();
       assertEquals(player1.getComponent(Health.class).get().val(), 80);
       assertEquals(player1.getComponent(Age.class).get().val(), 40);
+      ctx.updateEntityComponent(player1.getId(), new Health(100));
 
       var player2 = players.next();
       assertEquals(player2.getComponent(Health.class).get().val(), 95);
       assertEquals(player2.getComponent(Age.class).get().val(), 29);
+      ctx.updateEntityComponent(player2.getId(), new Health(50));
+      ctx.updateEntityComponent(player2.getId(), new Age(35));
 
       // Check npc
       assertEquals(npcQuery.getComponent(Health.class).get().val(), 67);
+    }
+  }
+
+  private static class CheckUpdatedQueriesSystem implements AppSystem {
+    @Override
+    public void run(MContext ctx) {
+      var playersQuery = ctx.query(Health.class, Age.class);
+      var players = playersQuery.iterator();
+
+      var player1 = players.next();
+      assertEquals(player1.getComponent(Health.class).get().val(), 100);
+
+      var player2 = players.next();
+      assertEquals(player2.getComponent(Health.class).get().val(), 50);
+      assertEquals(player2.getComponent(Age.class).get().val(), 35);
     }
   }
 
@@ -50,6 +68,7 @@ class RunQueriesTest {
     new Magics.App()
         .addSystem(new SetupSystem())
         .addSystem(new RunQuerySystem())
+        .addSystem(new CheckUpdatedQueriesSystem())
         .run();
 
   }
