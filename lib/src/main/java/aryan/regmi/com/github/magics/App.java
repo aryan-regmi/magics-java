@@ -55,25 +55,25 @@ public class App {
     }
   }
 
+  // TODO: Maybe need to synchronize values
   /**
    * Runs the systems in the app.
    */
   public void run() {
-    // TODO: Run all systems in a stage in any order -> Only stages are run in their
-    // orders, not the systems inside them
-    //
-    // Run all stages first, then run rest of the systems (eventually run rest in a
-    // separate thread)
+    // Sort the stages by their sort order
     stages.sort(new Comparator<Stage>() {
       @Override
       public int compare(Stage s1, Stage s2) {
         return s1.stageOrder - s2.stageOrder;
       }
     });
+
+    // Run all stages first, then run rest of the systems
     for (var stage : stages) {
-      var stageThreadHandles = new ArrayList<Thread>();
+      // Stages must run sequentially, but the systems inside the stages run in
+      // separate threads.
+      var stageThreadHandles = new HashSet<Thread>();
       for (var stageSystem : stage.systems()) {
-        // stageSystem.run(new MContext(world));
         var systemRunnerThread = new Thread(new SystemRunner(stageSystem, world));
         systemRunnerThread.start();
         stageThreadHandles.add(systemRunnerThread);
@@ -88,7 +88,7 @@ public class App {
       }
     }
 
-    var systemThreadHandles = new ArrayList<Thread>();
+    var systemThreadHandles = new HashSet<Thread>();
     for (var appSystem : systems) {
       var systemRunnerThread = new Thread(new SystemRunner(appSystem, world));
       systemRunnerThread.start();

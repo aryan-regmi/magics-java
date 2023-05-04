@@ -20,24 +20,37 @@ class AppEcsTest {
   private static class StagedSystem implements AppSystem {
     @Override
     public void run(MContext ctx) {
+      try {
+        Thread.sleep(2);
+
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
       System.out.println("I ran second");
-      System.out.println(ctx.getEntities());
     }
   }
 
   private static class ParSystem1 implements AppSystem {
     @Override
     public void run(MContext ctx) {
+      try {
+        Thread.sleep(4);
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
       System.out.println("I run by myself!");
-      System.out.println(ctx.getEntities());
     }
   }
 
   private static class ParSystem2 implements AppSystem {
     @Override
     public void run(MContext ctx) {
+      try {
+        Thread.sleep(2);
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
       System.out.println("I run by myself TOO!");
-      System.out.println(ctx.getEntities());
     }
   }
 

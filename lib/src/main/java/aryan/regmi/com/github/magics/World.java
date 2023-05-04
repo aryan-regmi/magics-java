@@ -19,7 +19,7 @@ class World {
     componentLists = new HashMap<Class<?>, List<Optional<Component>>>();
   }
 
-  int spawnEntity(Component... components) {
+  synchronized int spawnEntity(Component... components) {
     var entityId = numEntities;
     numEntities++;
 

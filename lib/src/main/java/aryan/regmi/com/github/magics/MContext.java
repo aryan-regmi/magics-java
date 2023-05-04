@@ -23,11 +23,11 @@ public class MContext {
     return world.entities;
   }
 
-  void updateEntity(int entityId, Entity newEntity) {
+  synchronized void updateEntity(int entityId, Entity newEntity) {
     world.entities.set(entityId, newEntity);
   }
 
-  boolean updateEntityComponent(int entityId, Component component) {
+  synchronized boolean updateEntityComponent(int entityId, Component component) {
     var entity = world.entities.get(entityId);
     if (entity.componentTypes.contains(component.getClass())) {
       var componentCount = 0;
@@ -43,7 +43,7 @@ public class MContext {
     return false;
   }
 
-  boolean removeEntity(int entityId) {
+  synchronized boolean removeEntity(int entityId) {
     if (entityId < world.numEntities) {
       world.entities.remove(entityId);
       return true;
@@ -51,5 +51,4 @@ public class MContext {
 
     return false;
   }
-
 }
